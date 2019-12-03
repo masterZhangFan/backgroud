@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2019-11-30 14:53:29
- * @LastEditTime: 2019-12-01 10:59:35
+ * @LastEditTime: 2019-12-04 01:44:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \member-agent-manage\src\views\system-manage\index.vue
@@ -21,17 +21,19 @@
           </el-input>
         </el-form-item>
         <el-form-item label="税率设置">
-          <el-input v-model="formLabelAlign.type"/>
+          <el-input v-model="formLabelAlign.type" />
         </el-form-item>
         <el-form-item label="处理会员利益">
           <el-input
-            v-model="formLabelAlign.type1" maxlength="200"
+            v-model="formLabelAlign.type1"
+            maxlength="200"
             show-word-limit
             type="textarea"
-            :rows="9"/>
+            :rows="9"
+          />
         </el-form-item>
         <el-form-item label="高级会员利益">
-          <el-input v-model="formLabelAlign.type2" maxlength="200" show-word-limit type="textarea" :rows="9"/>
+          <el-input v-model="formLabelAlign.type2" maxlength="200" show-word-limit type="textarea" :rows="9" />
         </el-form-item>
       </el-form>
     </el-card>
@@ -39,18 +41,25 @@
 </template>
 
 <script>
+import { getSysConfig } from '@/api/system'
+
 export default {
   data() {
     return {
       formLabelAlign: {
-        name: "",
-        region: "",
-        type: "",
-        type1: "",
-        type2: ""
+        name: '',
+        region: '',
+        type: '',
+        type1: '',
+        type2: ''
       }
-    };
+    }
+  },
+  mounted() {
+    getSysConfig().then(res => {
+
+    })
   }
-};
+}
 </script>
 

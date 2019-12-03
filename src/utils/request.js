@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2019-11-30 14:53:29
- * @LastEditTime: 2019-12-01 09:27:35
- * @LastEditors: your name
+ * @LastEditTime: 2019-12-03 23:59:47
+ * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \member-agent-manage\src\utils\request.js
  */
@@ -36,7 +36,6 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response.data
-    console.log(res)
     if (res.status * 1 !== 0) {
       Message({
         message: res.msg || 'Error',

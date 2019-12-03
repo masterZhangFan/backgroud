@@ -16,56 +16,60 @@
           </el-form-item>
         </el-form>
       </div>
-      <el-table
-        v-loading="listLoading"
-        :data="list"
-        element-loading-text="Loading"
-        border
-        fit
-        highlight-current-row
+      <Table
+        :table-data="list.slice(0,10)"
+        :table-columns="tableColumns"
+        :current-page="1"
+        :page-size="10"
+        :total-page="list.length"
       >
-        <el-table-column align="center" label="序号" width="95">
-          <template slot-scope="scope">
-            {{ scope.$index }}
+        <el-table-column
+          slot="memberLevel"
+          label="会员级别"
+          align="center"
+        >
+          <template slot-scope="{ row }">
+            <span>{{ row.memberLevel | dealLevel() }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="手机号">
-          <template slot-scope="scope">
-            <!-- {{ scope.row.title }} -->
-            15928137520
+        <el-table-column
+          slot="shoppingBalance"
+          label="购物余额"
+          align="center"
+        >
+          <template slot-scope="{ row }">
+            <span>￥{{ row.shoppingBalance }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="代理类别" align="center">
-          <template slot-scope="scope">
-            <span>初级会员</span>
+        <el-table-column
+          slot="cash"
+          label="可提现金额"
+          align="center"
+        >
+          <template slot-scope="{ row }">
+            <span>￥{{ row.cash }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="粉丝数" align="center">
-          <template slot-scope="scope">
-            {{ scope.row.pageviews }}
+        <el-table-column
+          slot="callBalance"
+          label="话费"
+          align="center"
+        >
+          <template slot-scope="{ row }">
+            <span>￥{{ row.callBalance }}</span>
           </template>
         </el-table-column>
-        <el-table-column class-name="status-col" label="购物余额" align="center">
-          <template slot-scope="scope">
-            ￥ 500
+        <el-table-column
+          slot="operate"
+          label="操作"
+          align="center"
+          width="200px"
+        >
+          <template slot-scope="{ row }">
+            <el-button type="primary" size="mini" @click="showUserInfo=true;curUserInfo=row">查看</el-button>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="可提现金额" width="200">
-          <template slot-scope="scope">
-            ￥ 500
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="话费" width="200">
-          <template slot-scope="scope">
-            ￥ 500
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="操作" width="200" fixed="right">
-          <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="showUserInfo=true">查看</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      </Table>
     </el-card>
     <el-dialog
       title="用户详情"
@@ -73,7 +77,7 @@
       width="480px"
       center
     >
-      <UserInfo />
+      <UserInfo :cur-user-info="curUserInfo" />
       <span slot="footer" class="dialog-footer">
         <el-button size="medium" @click="showUserInfo = false">确 定</el-button>
       </span>
@@ -82,12 +86,15 @@
 </template>
 
 <script>
-import { getList } from '@/api/table'
+import { getList } from '@/api/member'
+import { dealLevel } from '@/filters/index'
 import UserInfo from './components/user-info.vue'
+import Table from '@/components/Table'
 
 export default {
   components: {
-    UserInfo
+    UserInfo,
+    Table
   },
   filters: {
     statusFilter(status) {
@@ -97,7 +104,8 @@ export default {
         deleted: 'danger'
       }
       return statusMap[status]
-    }
+    },
+    dealLevel
   },
   data() {
     return {
@@ -110,7 +118,37 @@ export default {
         page_number: 10,
         totalPage: 0
       },
-      list: null
+      tableColumns: [{
+        type: 'index',
+        label: '序号',
+        width: '95px'
+      }, {
+        label: '手机号',
+        prop: 'phone'
+      }, {
+        // label: '会员级别',
+        // prop: 'memberLevel'
+        slot: 'memberLevel'
+      }, {
+        label: '粉丝数',
+        prop: 'fansNumber'
+      }, {
+        // label: '购物余额',
+        // prop: 'shoppingBalance'
+        slot: 'shoppingBalance'
+      }, {
+        // label: '可提现金额',
+        // prop: 'cash'
+        slot: 'cash'
+      }, {
+        // label: '话费',
+        // prop: 'callBalance'
+        slot: 'callBalance'
+      }, {
+        slot: 'operate'
+      }],
+      list: [],
+      curUserInfo: {}
     }
   },
   created() {
@@ -120,8 +158,10 @@ export default {
     fetchData() {
       this.listLoading = true
       getList(this.formInline).then(response => {
-        this.list = response.data.list
         this.listLoading = false
+        if (response.status * 1 === 0) {
+          this.list = response.data.list
+        }
       })
     },
     onSubmit() {

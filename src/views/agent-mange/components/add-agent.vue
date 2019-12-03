@@ -1,14 +1,20 @@
 <template>
-  <div v-loading="isLoading" :class="{'user-info-warp': true,'edit-box': isEdit===1}">
+  <div class="user-info-warp edit-box">
     <div class="item-box">
       <span class="item-box-left">
-        <i>手机号码：</i>
-        <i>{{ agentInfo.phone }}</i>
+        <i>选择用户：</i>
+        <el-select v-model="agentInfo.delegateTypeName" size="small" class="w180" placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
       </span>
       <span class="item-box-right">
         <i>代理类别：</i>
-        <i v-if="isEdit===0">{{ agentInfo.delegateTypeName }}</i>
-        <el-select v-else v-model="agentInfo.delegateTypeName" size="small" class="w180" placeholder="请选择">
+        <el-select v-model="agentInfo.delegateTypeName" size="small" class="w180" placeholder="请选择">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -20,34 +26,32 @@
     </div>
     <div class="item-box">
       <span class="item-box-left">
-        <i>粉丝数：</i>
-        <i>{{ agentInfo.fansNumber }}</i>
+        <i>返现金额：</i>
+        <el-input v-model="agentInfo.cashBackAmount" size="small" class="w180" type="text" />
       </span>
       <span class="item-box-right">
-        <i>购物余额：</i>
-        <i>￥{{ agentInfo.shoppingBalance }}</i>
+        <i>身份证正：</i>
+        <el-input v-model="agentInfo.cashBackAmount" size="small" class="w180" type="text" />
       </span>
     </div>
     <div class="item-box">
       <span class="item-box-left">
-        <i>可提现金额：</i>
-        <i>￥{{ agentInfo.cash }}</i>
+        <i>身份证反：</i>
+        <el-input v-model="agentInfo.cashBackAmount" size="small" class="w180" type="text" />
       </span>
       <span class="item-box-right">
-        <i>话　　费：</i>
-        <i>￥{{ agentInfo.callBalance }}</i>
+        <i>营业执照：</i>
+        <el-input v-model="agentInfo.cashBackAmount" size="small" class="w180" type="text" />
       </span>
     </div>
     <div class="item-box">
       <span class="item-box-left">
         <i>返现金额：</i>
-        <i v-if="isEdit===0">￥{{ agentInfo.cashBackAmount }}</i>
-        <el-input v-else v-model="agentInfo.cashBackAmount" size="small" class="w180" type="text" />
+        <el-input v-model="agentInfo.cashBackAmount" size="small" class="w180" type="text" />
       </span>
       <span class="item-box-right">
         <i>状　　态：</i>
-        <i v-if="isEdit===0">已启用</i>
-        <el-select v-else v-model="agentInfo.cashBackAmount" size="small" class="w180" placeholder="请选择">
+        <el-select v-model="value" size="small" class="w180" placeholder="请选择">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -78,7 +82,8 @@ export default {
     return {
       isLoading: false,
       agentInfo: {},
-      options: []
+      options: [],
+      value: ''
     }
   },
   watch: {

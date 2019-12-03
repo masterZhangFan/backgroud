@@ -15,7 +15,7 @@
             </el-select>
           </el-form-item>
           <el-form-item style="position: absolute;right: -10px;">
-            <el-button type="primary">添加代理</el-button>
+            <el-button type="primary" @click="openDialog(2)">添加代理</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -27,25 +27,67 @@
         :total-page="list.length"
       >
         <el-table-column
+          slot="memberLevel"
+          label="会员级别"
+          align="center"
+        >
+          <template slot-scope="{ row }">
+            <span>{{ row.memberLevel | dealLevel() }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          slot="shoppingBalance"
+          label="购物余额"
+          align="center"
+        >
+          <template slot-scope="{ row }">
+            <span>￥{{ row.shoppingBalance }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          slot="cash"
+          label="可提现金额"
+          align="center"
+        >
+          <template slot-scope="{ row }">
+            <span>￥{{ row.cash }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          slot="callBalance"
+          label="话费"
+          align="center"
+        >
+          <template slot-scope="{ row }">
+            <span>￥{{ row.callBalance }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
           slot="operate"
           label="操作"
           align="center"
           width="200px"
         >
           <template slot-scope="{ row }">
-            <el-button type="primary" size="mini" @click="showAgentInfo=true">查看</el-button>
-            <el-button type="warning" size="mini" @click="showAgentInfo=true">编辑</el-button>
+            <el-button type="primary" size="mini" @click="openDialog(0,row.userId)">查看</el-button>
+            <el-button type="warning" size="mini" @click="openDialog(1,row.userId)">编辑</el-button>
           </template>
         </el-table-column>
       </Table>
     </el-card>
     <el-dialog
-      title="用户详情"
+      :title="dialogTitle"
       :visible.sync="showAgentInfo"
-      width="480px"
+      :width="dialogWidth"
       center
     >
-      <AgentInfo />
+      <component
+        :is="currentComponent"
+        ref="component"
+        :cur-agent-id="curAgentId"
+        :is-edit="isEdit"
+      />
+      <!-- <AgentInfo :cur-agent-id="curAgentId" :is-edit="isEdit" /> -->
       <span slot="footer" class="dialog-footer">
         <el-button size="medium" @click="showAgentInfo = false">确 定</el-button>
       </span>
@@ -54,13 +96,14 @@
 </template>
 
 <script>
-import { getList } from '@/api/table'
+import { getAgentList } from '@/api/agent'
 import AgentInfo from './components/agent-info.vue'
+import AddAgent from './components/add-agent.vue'
 import Table from '@/components/Table'
 
 export default {
   components: {
-    AgentInfo,
+    // AgentInfo,
     Table
   },
   filters: {
@@ -87,26 +130,25 @@ export default {
         width: '95px'
       }, {
         label: '手机号',
-        prop: 'author'
+        prop: 'phone'
       }, {
-        label: '代理类型',
-        prop: 'author'
+        label: '代理类别',
+        prop: 'delegateTypeName'
       }, {
-        label: '粉丝数',
-        prop: 'author'
+        slot: 'shoppingBalance'
       }, {
-        label: '购物余额',
-        prop: 'author'
+        slot: 'cash'
       }, {
-        label: '可提现金额',
-        prop: 'author'
-      }, {
-        label: '话费',
-        prop: 'author'
+        slot: 'callBalance'
       }, {
         slot: 'operate'
       }],
-      list: []
+      list: [],
+      curAgentId: 0,
+      isEdit: 0,
+      dialogWidth: '',
+      dialogTitle: '',
+      currentComponent: AgentInfo
     }
   },
   created() {
@@ -121,14 +163,37 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      getList().then(response => {
-        this.list = response.data.items
-        console.log(this.list)
+      getAgentList().then(response => {
+        this.list = response.data.list
         this.listLoading = false
       })
     },
     onSubmit() {
       console.log(123)
+    },
+    openDialog(num, userId) {
+      switch (num) {
+        case 0:
+          this.curAgentId = userId
+          this.isEdit = num
+          this.dialogWidth = '480px'
+          this.dialogTitle = '代理详情'
+          this.currentComponent = AgentInfo
+          break
+        case 1:
+          this.curAgentId = userId
+          this.isEdit = num
+          this.dialogWidth = '680px'
+          this.dialogTitle = '编辑代理'
+          this.currentComponent = AgentInfo
+          break
+        case 2:
+          this.dialogWidth = '680'
+          this.dialogTitle = '新增代理'
+          this.currentComponent = AddAgent
+          break
+      }
+      this.showAgentInfo = true
     }
   }
 }
