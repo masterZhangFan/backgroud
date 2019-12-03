@@ -4,12 +4,12 @@
       <div>
         <el-form style="position: relative;" size="medium" :inline="true" :model="formInline" class="demo-form-inline" label-width="0">
           <el-form-item>
-            <el-input v-model="formInline.user" style="width: 360px;" placeholder="请输入内容" class="input-with-select">
+            <el-input v-model="formInline.searchText" style="width: 360px;" placeholder="请输入内容" class="input-with-select">
               <el-button slot="append" icon="el-icon-search" @click="onSubmit" />
             </el-input>
           </el-form-item>
           <el-form-item>
-            <el-select v-model="formInline.region" style="width: 200px;" placeholder="活动区域">
+            <el-select v-model="formInline.memberLevel" style="width: 200px;" placeholder="会员等级">
               <el-option label="区域一" value="shanghai" />
               <el-option label="区域二" value="beijing" />
             </el-select>
@@ -104,8 +104,11 @@ export default {
       showUserInfo: false,
       listLoading: true,
       formInline: {
-        user: '',
-        region: ''
+        searchText: '',
+        memberLevel: '',
+        page_index: 1,
+        page_number: 10,
+        totalPage: 0
       },
       list: null
     }
@@ -116,8 +119,8 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      getList().then(response => {
-        this.list = response.data.items
+      getList(this.formInline).then(response => {
+        this.list = response.data.list
         this.listLoading = false
       })
     },
