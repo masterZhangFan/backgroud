@@ -83,20 +83,22 @@
     >
       <component
         :is="currentComponent"
-        ref="component"
+        ref="agentInfo"
         :cur-agent-id="curAgentId"
         :is-edit="isEdit"
+        :agent-type-list="agentTypeList"
       />
       <!-- <AgentInfo :cur-agent-id="curAgentId" :is-edit="isEdit" /> -->
       <span slot="footer" class="dialog-footer">
-        <el-button size="medium" @click="showAgentInfo = false">确 定</el-button>
+        <el-button size="medium" @click="confirm">确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getAgentList } from '@/api/agent'
+// import Bus from '@/utils/bus'
+import { getAgentList, getAgentTypeList } from '@/api/agent'
 import AgentInfo from './components/agent-info.vue'
 import AddAgent from './components/add-agent.vue'
 import Table from '@/components/Table'
@@ -148,11 +150,13 @@ export default {
       isEdit: 0,
       dialogWidth: '',
       dialogTitle: '',
-      currentComponent: AgentInfo
+      currentComponent: '',
+      agentTypeList: []
     }
   },
   created() {
     this.fetchData()
+    this.getAgentTypeList()
   },
   methods: {
     handleCurrentPageChange(currentPage) {
@@ -160,6 +164,11 @@ export default {
     },
     hanlePageSizeChange(pageSize) {
       this.fetchData()
+    },
+    getAgentTypeList() {
+      getAgentTypeList().then(res => {
+        this.agentTypeList = res.data
+      })
     },
     fetchData() {
       this.listLoading = true
@@ -171,24 +180,34 @@ export default {
     onSubmit() {
       console.log(123)
     },
+    confirm() {
+      switch (this.isEdit * 1) {
+        case 0:
+          this.showAgentInfo = false
+          break
+        case 1: case 2:
+          console.log(this.isEdit)
+          this.$refs.agentInfo.editAgentInfo()
+          break
+      }
+    },
     openDialog(num, userId) {
+      this.isEdit = num
       switch (num) {
         case 0:
           this.curAgentId = userId
-          this.isEdit = num
           this.dialogWidth = '480px'
           this.dialogTitle = '代理详情'
           this.currentComponent = AgentInfo
           break
         case 1:
           this.curAgentId = userId
-          this.isEdit = num
           this.dialogWidth = '680px'
           this.dialogTitle = '编辑代理'
           this.currentComponent = AgentInfo
           break
         case 2:
-          this.dialogWidth = '680'
+          this.dialogWidth = '680px'
           this.dialogTitle = '新增代理'
           this.currentComponent = AddAgent
           break

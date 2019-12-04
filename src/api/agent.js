@@ -8,6 +8,15 @@
  */
 import request from '@/utils/request'
 
+// 代理类型列表
+export function getAgentTypeList(params) {
+  return request({
+    url: '/delegate/getDelegateTypes',
+    method: 'get',
+    params
+  })
+}
+
 // 代理列表
 export function getAgentList(params) {
   return request({
@@ -23,5 +32,14 @@ export function getAgentInfo(params) {
     url: '/delegate/delegateInfo',
     method: 'get',
     params
+  })
+}
+
+// 编辑代理
+export function setAgentInfo(data) {
+  return request({
+    url: '/delegate/setDelegate',
+    method: 'post',
+    data
   })
 }

@@ -8,12 +8,12 @@
       <span class="item-box-right">
         <i>代理类别：</i>
         <i v-if="isEdit===0">{{ agentInfo.delegateTypeName }}</i>
-        <el-select v-else v-model="agentInfo.delegateTypeName" size="small" class="w180" placeholder="请选择">
+        <el-select v-else v-model="agentInfo.delegateTypeId" size="small" class="w180" placeholder="请选择">
           <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            v-for="item in agentTypeList"
+            :key="item.delegateTypeId"
+            :label="item.delegateTypeName"
+            :value="item.delegateTypeId"
           />
         </el-select>
       </span>
@@ -47,9 +47,9 @@
       <span class="item-box-right">
         <i>状　　态：</i>
         <i v-if="isEdit===0">已启用</i>
-        <el-select v-else v-model="agentInfo.cashBackAmount" size="small" class="w180" placeholder="请选择">
+        <el-select v-else v-model="status" size="small" class="w180" placeholder="请选择" @click="changeStatus">
           <el-option
-            v-for="item in options"
+            v-for="item in statusArr"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -61,7 +61,8 @@
 </template>
 
 <script>
-import { getAgentInfo } from '@/api/agent'
+// import Bus from '@/utils/bus'
+import { getAgentInfo, setAgentInfo } from '@/api/agent'
 
 export default {
   props: {
@@ -72,13 +73,24 @@ export default {
     isEdit: {
       type: Number,
       default: -1
+    },
+    agentTypeList: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
     return {
       isLoading: false,
       agentInfo: {},
-      options: []
+      status: '',
+      statusArr: [{
+        label: '启用',
+        value: 1
+      }, {
+        label: '停用',
+        value: 0
+      }]
     }
   },
   watch: {
@@ -86,9 +98,11 @@ export default {
       this.getAgentInfo(val)
     }
   },
-  created() {},
-  mounted() {
+  created() {
     this.getAgentInfo(this.curAgentId)
+  },
+  mounted() {
+
   },
   methods: {
     getAgentInfo(id) {
@@ -99,7 +113,24 @@ export default {
         this.isLoading = false
         if (res.status * 1 === 0) {
           this.agentInfo = res.data
+          if (res.data.delegateEnbale) {
+            this.status = 1
+          } else {
+            this.status = 0
+          }
         }
+      })
+    },
+    changeStatus(status) {
+      if (status) {
+        this.agentInfo.delegateEnbale = true
+      } else {
+        this.agentInfo.delegateEnbale = false
+      }
+    },
+    editAgentInfo() {
+      setAgentInfo(this.agentInfo).then(res => {
+
       })
     }
   }

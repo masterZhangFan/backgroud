@@ -3,9 +3,9 @@
     <div class="item-box">
       <span class="item-box-left">
         <i>选择用户：</i>
-        <el-select v-model="agentInfo.delegateTypeName" size="small" class="w180" placeholder="请选择">
+        <el-select v-model="agentInfo.userId" size="small" class="w180" placeholder="请选择">
           <el-option
-            v-for="item in options"
+            v-for="item in userArr"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -14,34 +14,14 @@
       </span>
       <span class="item-box-right">
         <i>代理类别：</i>
-        <el-select v-model="agentInfo.delegateTypeName" size="small" class="w180" placeholder="请选择">
+        <el-select v-model="agentInfo.delegateTypeId" size="small" class="w180" placeholder="请选择">
           <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            v-for="item in agentTypeList"
+            :key="item.delegateTypeId"
+            :label="item.delegateTypeName"
+            :value="item.delegateTypeId"
           />
         </el-select>
-      </span>
-    </div>
-    <div class="item-box">
-      <span class="item-box-left">
-        <i>返现金额：</i>
-        <el-input v-model="agentInfo.cashBackAmount" size="small" class="w180" type="text" />
-      </span>
-      <span class="item-box-right">
-        <i>身份证正：</i>
-        <el-input v-model="agentInfo.cashBackAmount" size="small" class="w180" type="text" />
-      </span>
-    </div>
-    <div class="item-box">
-      <span class="item-box-left">
-        <i>身份证反：</i>
-        <el-input v-model="agentInfo.cashBackAmount" size="small" class="w180" type="text" />
-      </span>
-      <span class="item-box-right">
-        <i>营业执照：</i>
-        <el-input v-model="agentInfo.cashBackAmount" size="small" class="w180" type="text" />
       </span>
     </div>
     <div class="item-box">
@@ -51,60 +31,99 @@
       </span>
       <span class="item-box-right">
         <i>状　　态：</i>
-        <el-select v-model="value" size="small" class="w180" placeholder="请选择">
+        <el-select v-model="status" size="small" class="w180" placeholder="请选择" @change="changeStatus">
           <el-option
-            v-for="item in options"
-            :key="item.value"
+            v-for="item in statusArr"
+            :key="item.label"
             :label="item.label"
             :value="item.value"
           />
         </el-select>
       </span>
     </div>
+    <div class="item-box upload-img">
+      <span class="item-box-left">
+        <i>身份证反：</i>
+        <UploadFile obj-key="idCardBackPic" class="w180" @handleSuccess="handleSuccess" />
+      </span>
+      <span class="item-box-right">
+        <i>身份证正：</i>
+        <UploadFile obj-key="idCardFrontPic" class="w180" @handleSuccess="handleSuccess" />
+      </span>
+    </div>
+    <div class="item-box upload-img">
+      <span class="item-box-left">
+        <i>营业执照：</i>
+        <UploadFile obj-key="businessLicensePic" class="w180" @handleSuccess="handleSuccess" />
+      </span>
+    </div>
   </div>
 </template>
 
 <script>
-import { getAgentInfo } from '@/api/agent'
+import { setAgentInfo } from '@/api/agent'
+import UploadImg from '@/components/Upload/UploadImg'
+import UploadFile from '@/components/Upload/UploadFile'
 
 export default {
+  components: {
+    UploadImg,
+    UploadFile
+  },
   props: {
-    curAgentId: {
-      type: Number,
-      default: 0
-    },
-    isEdit: {
-      type: Number,
-      default: -1
+    agentTypeList: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
     return {
       isLoading: false,
-      agentInfo: {},
-      options: [],
-      value: ''
-    }
-  },
-  watch: {
-    curAgentId(val) {
-      this.getAgentInfo(val)
+      status: 1,
+      statusArr: [{
+        label: '启用',
+        value: 1
+      }, {
+        label: '停用',
+        value: 0
+      }],
+      agentInfo: {
+        userId: '',
+        delegateTypeId: '',
+        cashBackAmount: '',
+        delegateEnbale: '',
+        idCardFrontPic: '',
+        idCardBackPic: '',
+        businessLicensePic: ''
+      },
+      userArr: [],
+      imageUrl: ''
     }
   },
   created() {},
   mounted() {
-    this.getAgentInfo(this.curAgentId)
+
   },
   methods: {
-    getAgentInfo(id) {
-      this.isLoading = true
-      getAgentInfo({
-        userId: id
-      }).then(res => {
-        this.isLoading = false
-        if (res.status * 1 === 0) {
-          this.agentInfo = res.data
-        }
+    changeStatus(status) {
+      if (status) {
+        this.agentInfo.delegateEnbale = true
+      } else {
+        this.agentInfo.delegateEnbale = false
+      }
+    },
+    handlePictureCardPreview() {
+
+    },
+    handleRemove() {
+
+    },
+    handleSuccess(key, url) {
+      this.agentInfo[key] = url
+    },
+    editAgentInfo() {
+      setAgentInfo(this.agentInfo).then(res => {
+
       })
     }
   }
@@ -166,6 +185,13 @@ export default {
         width: 300px;
         &.item-box-right{
           justify-content: flex-start;
+        }
+      }
+      &.upload-img{
+        align-items: flex-start;
+        .item-box-left,
+        .item-box-right {
+          align-items: baseline;
         }
       }
     }
