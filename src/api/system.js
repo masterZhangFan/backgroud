@@ -11,7 +11,7 @@ import request from '@/utils/request'
 // 获取系统基本配置
 export function getSysConfig(params) {
   return request({
-    url: '/SettingService/getSysConfig',
+    url: '/setting/getSysConfig',
     method: 'get',
     params
   })
@@ -20,7 +20,7 @@ export function getSysConfig(params) {
 // 设置基础设置
 export function setSysConfig(data) {
   return request({
-    url: '/SettingService/sysConfig',
+    url: '/Setting/sysConfig',
     method: 'post',
     data
   })
