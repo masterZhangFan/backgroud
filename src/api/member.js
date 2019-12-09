@@ -15,3 +15,12 @@ export function getList(params) {
     params
   })
 }
+
+// 不是代理的会员
+export function getMemberInfoNotIncludeDelegate(params) {
+  return request({
+    url: '/member/memberInfoNotIncludeDelegate',
+    method: 'get',
+    params
+  })
+}

@@ -81,12 +81,12 @@ export default {
     handleCurrentChange(currentPage) {
       // const $main = document.querySelector('.el-main')
       // $main.scrollTop = 0
-      this.$emit('handleCurrentPageChange', currentPage)
+      this.$emit('handleCurrentChange', currentPage)
     },
     handleSizeChange(pageSize) {
       // const $main = document.querySelector('.el-main')
       // $main.scrollTop = 0
-      this.$emit('handlePageSizeChange', pageSize)
+      this.$emit('handleSizeChange', pageSize)
     }
   }
 }

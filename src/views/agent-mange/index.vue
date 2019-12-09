@@ -4,14 +4,13 @@
       <div>
         <el-form style="position: relative;" size="medium" :inline="true" :model="formInline" class="demo-form-inline" label-width="0">
           <el-form-item>
-            <el-input v-model="formInline.user" style="width: 360px;" placeholder="请输入内容" class="input-with-select">
-              <el-button slot="append" icon="el-icon-search" @click="onSubmit" />
+            <el-input v-model="formInline.searchText" style="width: 360px;" placeholder="请输入内容" class="input-with-select" clearable>
+              <el-button slot="append" icon="el-icon-search" @click="filterSeach" />
             </el-input>
           </el-form-item>
           <el-form-item>
-            <el-select v-model="formInline.region" style="width: 200px;" placeholder="活动区域">
-              <el-option label="区域一" value="shanghai" />
-              <el-option label="区域二" value="beijing" />
+            <el-select v-model="formInline.delegateTypeId" style="width: 200px;" placeholder="筛选代理类别" clearable @change="filterSeach">
+              <el-option v-for="item in agentTypeList" :key="item.delegateTypeId" :label="item.delegateTypeName" :value="item.delegateTypeId" />
             </el-select>
           </el-form-item>
           <el-form-item style="position: absolute;right: -10px;">
@@ -20,11 +19,13 @@
         </el-form>
       </div>
       <Table
-        :table-data="list.slice(0,10)"
+        :table-data="list"
         :table-columns="tableColumns"
-        :current-page="1"
-        :page-size="10"
-        :total-page="list.length"
+        :current-page="formInline.page_index"
+        :page-size="formInline.page_number"
+        :total-page="formInline.totalPage"
+        @handleSizeChange="handleSizeChange"
+        @handleCurrentChange="handleCurrentChange"
       >
         <el-table-column
           slot="memberLevel"
@@ -123,8 +124,11 @@ export default {
       showAgentInfo: false,
       listLoading: true,
       formInline: {
-        user: '',
-        region: ''
+        page_index: 1,
+        page_number: 10,
+        totalPage: 0,
+        searchText: '',
+        delegateTypeId: ''
       },
       tableColumns: [{
         type: 'index',
@@ -159,10 +163,13 @@ export default {
     this.getAgentTypeList()
   },
   methods: {
-    handleCurrentPageChange(currentPage) {
+    handleCurrentChange(pageIndex) {
+      this.formInline.page_index = pageIndex
       this.fetchData()
     },
-    hanlePageSizeChange(pageSize) {
+    handleSizeChange(pageNum) {
+      this.formInline.page_index = 1
+      this.formInline.page_number = pageNum
       this.fetchData()
     },
     getAgentTypeList() {
@@ -172,10 +179,15 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      getAgentList().then(response => {
-        this.list = response.data.list
+      getAgentList(this.formInline).then(res => {
+        this.list = res.data.list
+        this.formInline.totalPage = res.total
         this.listLoading = false
       })
+    },
+    filterSeach() {
+      this.formInline.page_index = 1
+      this.fetchData()
     },
     onSubmit() {
       console.log(123)

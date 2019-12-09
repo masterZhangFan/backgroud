@@ -5,10 +5,10 @@
         <i>选择用户：</i>
         <el-select v-model="agentInfo.userId" size="small" class="w180" placeholder="请选择">
           <el-option
-            v-for="item in userArr"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            v-for="item in memberNotAgentList"
+            :key="item.userId"
+            :label="item.nickname"
+            :value="item.userId"
           />
         </el-select>
       </span>
@@ -27,7 +27,7 @@
     <div class="item-box">
       <span class="item-box-left">
         <i>返现金额：</i>
-        <el-input v-model="agentInfo.cashBackAmount" size="small" class="w180" type="text" />
+        <el-input v-model="agentInfo.cashBackAmount" placeholder="1-30" size="small" class="w180" type="text" />
       </span>
       <span class="item-box-right">
         <i>状　　态：</i>
@@ -62,6 +62,7 @@
 
 <script>
 import { setAgentInfo } from '@/api/agent'
+import { getMemberInfoNotIncludeDelegate } from '@/api/member'
 import UploadImg from '@/components/Upload/UploadImg'
 import UploadFile from '@/components/Upload/UploadFile'
 
@@ -79,6 +80,7 @@ export default {
   data() {
     return {
       isLoading: false,
+      memberNotAgentList: [],
       status: 1,
       statusArr: [{
         label: '启用',
@@ -91,7 +93,7 @@ export default {
         userId: '',
         delegateTypeId: '',
         cashBackAmount: '',
-        delegateEnbale: '',
+        delegateEnbale: true,
         idCardFrontPic: '',
         idCardBackPic: '',
         businessLicensePic: ''
@@ -100,7 +102,11 @@ export default {
       imageUrl: ''
     }
   },
-  created() {},
+  created() {
+    getMemberInfoNotIncludeDelegate().then(res => {
+      this.memberNotAgentList = res.data
+    })
+  },
   mounted() {
 
   },
@@ -122,6 +128,7 @@ export default {
       this.agentInfo[key] = url
     },
     editAgentInfo() {
+      this.agentInfo.cashBackAmount = this.agentInfo.cashBackAmount * 1
       setAgentInfo(this.agentInfo).then(res => {
 
       })

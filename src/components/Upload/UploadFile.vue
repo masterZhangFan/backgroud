@@ -47,7 +47,7 @@ export default {
       if (res.status * 1 !== 0) {
         this.$message.warning(res.msg)
       } else {
-        this.$emit('handleSuccess', this.objKey, res.path)
+        this.$emit('handleSuccess', this.objKey, res.data[0].path)
       }
     }
   }

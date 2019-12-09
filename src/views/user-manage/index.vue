@@ -4,24 +4,26 @@
       <div>
         <el-form style="position: relative;" size="medium" :inline="true" :model="formInline" class="demo-form-inline" label-width="0">
           <el-form-item>
-            <el-input v-model="formInline.searchText" style="width: 360px;" placeholder="请输入内容" class="input-with-select">
-              <el-button slot="append" icon="el-icon-search" @click="onSubmit" />
+            <el-input v-model="formInline.searchText" style="width: 360px;" placeholder="请输入内容" class="input-with-select" clearable>
+              <el-button slot="append" icon="el-icon-search" @click="filterSearch" />
             </el-input>
           </el-form-item>
           <el-form-item>
-            <el-select v-model="formInline.memberLevel" style="width: 200px;" placeholder="会员等级">
-              <el-option label="区域一" value="shanghai" />
-              <el-option label="区域二" value="beijing" />
+            <el-select v-model="formInline.memberLevel" style="width: 200px;" placeholder="会员等级" clearable @change="filterSearch">
+              <el-option label="初级会员" value="1" />
+              <el-option label="高级会员" value="2" />
             </el-select>
           </el-form-item>
         </el-form>
       </div>
       <Table
-        :table-data="list.slice(0,10)"
+        :table-data="list"
         :table-columns="tableColumns"
-        :current-page="1"
-        :page-size="10"
-        :total-page="list.length"
+        :current-page="formInline.page_index"
+        :page-size="formInline.page_number"
+        :total-page="formInline.totalPage"
+        @handleSizeChange="handleSizeChange"
+        @handleCurrentChange="handleCurrentChange"
       >
         <el-table-column
           slot="memberLevel"
@@ -112,11 +114,11 @@ export default {
       showUserInfo: false,
       listLoading: true,
       formInline: {
-        searchText: '',
-        memberLevel: '',
         page_index: 1,
         page_number: 10,
-        totalPage: 0
+        totalPage: 0,
+        searchText: '',
+        memberLevel: ''
       },
       tableColumns: [{
         type: 'index',
@@ -155,17 +157,28 @@ export default {
     this.fetchData()
   },
   methods: {
+    handleCurrentChange(pageIndex) {
+      this.formInline.page_index = pageIndex
+      this.fetchData()
+    },
+    handleSizeChange(pageNum) {
+      this.formInline.page_index = 1
+      this.formInline.page_number = pageNum
+      this.fetchData()
+    },
     fetchData() {
       this.listLoading = true
-      getList(this.formInline).then(response => {
+      getList(this.formInline).then(res => {
         this.listLoading = false
-        if (response.status * 1 === 0) {
-          this.list = response.data.list
+        if (res.status * 1 === 0) {
+          this.list = res.data.list
+          this.formInline.totalPage = res.total
         }
       })
     },
-    onSubmit() {
-      console.log(123)
+    filterSearch() {
+      this.formInline.page_index = 1
+      this.fetchData()
     }
   }
 }

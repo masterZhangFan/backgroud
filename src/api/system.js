@@ -20,7 +20,7 @@ export function getSysConfig(params) {
 // 设置基础设置
 export function setSysConfig(data) {
   return request({
-    url: '/Setting/sysConfig',
+    url: '/setting/sysConfig',
     method: 'post',
     data
   })
