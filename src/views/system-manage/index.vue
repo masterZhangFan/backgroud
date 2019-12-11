@@ -20,6 +20,21 @@
             <template slot="append">元</template>
           </el-input>
         </el-form-item>
+         <el-form-item label="二级返现金额">
+          <el-input v-model="formLabelAlign.secondLevelCashback" placeholder="请输入内容">
+            <template slot="append">元</template>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="充值会员反话费">
+        <el-input v-model="formLabelAlign.callAmountBack" placeholder="请输入内容">
+          <template slot="append">元</template>
+        </el-input>
+        </el-form-item>
+         <el-form-item label="充值会员反购物余额">
+        <el-input v-model="formLabelAlign.shoppingAmountBack" placeholder="请输入内容">
+          <template slot="append">元</template>
+        </el-input>
+        </el-form-item>
         <el-form-item label="税率设置">
           <el-input v-model="formLabelAlign.taxRate" placeholder="税率0-100" />
         </el-form-item>
@@ -35,7 +50,9 @@
         <el-form-item label="高级会员权益">
           <el-input v-model="formLabelAlign.seniorMemberRules" maxlength="200" show-word-limit type="textarea" :rows="9" />
         </el-form-item>
-
+        <el-form-item label="代理规则">
+          <el-input v-model="formLabelAlign.delegateRules" maxlength="200" show-word-limit type="textarea" :rows="9" />
+        </el-form-item>
         <el-form-item>
           <el-button @click="setSysConfig">设 置</el-button>
         </el-form-item>
