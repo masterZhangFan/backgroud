@@ -88,6 +88,7 @@
         :cur-agent-id="curAgentId"
         :is-edit="isEdit"
         :agent-type-list="agentTypeList"
+        @closeDialog="closeDialog"
       />
       <!-- <AgentInfo :cur-agent-id="curAgentId" :is-edit="isEdit" /> -->
       <span slot="footer" class="dialog-footer">
@@ -181,7 +182,7 @@ export default {
       this.listLoading = true
       getAgentList(this.formInline).then(res => {
         this.list = res.data.list
-        this.formInline.totalPage = res.total
+        this.formInline.totalPage = res.data.total
         this.listLoading = false
       })
     },
@@ -198,7 +199,6 @@ export default {
           this.showAgentInfo = false
           break
         case 1: case 2:
-          console.log(this.isEdit)
           this.$refs.agentInfo.editAgentInfo()
           break
       }
@@ -225,6 +225,10 @@ export default {
           break
       }
       this.showAgentInfo = true
+    },
+    closeDialog() {
+      this.showAgentInfo = false
+      this.fetchData()
     }
   }
 }

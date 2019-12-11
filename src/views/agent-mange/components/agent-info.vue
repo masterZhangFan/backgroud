@@ -130,7 +130,8 @@ export default {
     },
     editAgentInfo() {
       setAgentInfo(this.agentInfo).then(res => {
-
+        this.$message.success('操作成功')
+        this.$emit('closeDialog')
       })
     }
   }

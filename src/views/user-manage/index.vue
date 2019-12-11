@@ -172,7 +172,7 @@ export default {
         this.listLoading = false
         if (res.status * 1 === 0) {
           this.list = res.data.list
-          this.formInline.totalPage = res.total
+          this.formInline.totalPage = res.data.total
         }
       })
     },

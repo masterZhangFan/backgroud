@@ -3,7 +3,7 @@
     <div class="item-box">
       <span class="item-box-left">
         <i>选择用户：</i>
-        <el-select v-model="agentInfo.userId" size="small" class="w180" placeholder="请选择">
+        <el-select v-model="agentInfo.userId" filterable size="small" class="w180" placeholder="请选择">
           <el-option
             v-for="item in memberNotAgentList"
             :key="item.userId"
@@ -130,7 +130,8 @@ export default {
     editAgentInfo() {
       this.agentInfo.cashBackAmount = this.agentInfo.cashBackAmount * 1
       setAgentInfo(this.agentInfo).then(res => {
-
+        this.$message.success('操作成功')
+        this.$emit('closeDialog')
       })
     }
   }
