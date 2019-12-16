@@ -9,49 +9,43 @@
 <template>
   <div class="app-container">
     <el-card>
-      <el-form style="width: 600px;" label-width="100px" :model="formLabelAlign">
-        <el-form-item label="会员金额设置">
+      <el-form style="width: 1000px;" label-width="140px" :model="formLabelAlign">
+        <el-form-item class="w600" label="会员金额设置">
           <el-input v-model="formLabelAlign.memberPrice" placeholder="请输入内容">
             <template slot="append">元</template>
           </el-input>
         </el-form-item>
-        <el-form-item label="一级返现金额">
+        <el-form-item class="w600" label="一级返现金额">
           <el-input v-model="formLabelAlign.onceLevelCashback" placeholder="请输入内容">
             <template slot="append">元</template>
           </el-input>
         </el-form-item>
-         <el-form-item label="二级返现金额">
+        <el-form-item class="w600" label="二级返现金额">
           <el-input v-model="formLabelAlign.secondLevelCashback" placeholder="请输入内容">
             <template slot="append">元</template>
           </el-input>
         </el-form-item>
-        <el-form-item label="充值会员反话费">
-        <el-input v-model="formLabelAlign.callAmountBack" placeholder="请输入内容">
-          <template slot="append">元</template>
-        </el-input>
+        <el-form-item class="w600" label="充值会员反话费">
+          <el-input v-model="formLabelAlign.callAmountBack" placeholder="请输入内容">
+            <template slot="append">元</template>
+          </el-input>
         </el-form-item>
-         <el-form-item label="充值会员反购物余额">
-        <el-input v-model="formLabelAlign.shoppingAmountBack" placeholder="请输入内容">
-          <template slot="append">元</template>
-        </el-input>
+        <el-form-item class="w600" label="充值会员反购物余额">
+          <el-input v-model="formLabelAlign.shoppingAmountBack" placeholder="请输入内容">
+            <template slot="append">元</template>
+          </el-input>
         </el-form-item>
-        <el-form-item label="税率设置">
+        <el-form-item class="w600" label="税率设置">
           <el-input v-model="formLabelAlign.taxRate" placeholder="税率0-100" />
         </el-form-item>
         <el-form-item label="会员规则">
-          <el-input
-            v-model="formLabelAlign.memberRules"
-            maxlength="200"
-            show-word-limit
-            type="textarea"
-            :rows="9"
-          />
+          <Tinymce v-model="formLabelAlign.memberRules" />
         </el-form-item>
         <el-form-item label="高级会员权益">
-          <el-input v-model="formLabelAlign.seniorMemberRules" maxlength="200" show-word-limit type="textarea" :rows="9" />
+          <Tinymce v-model="formLabelAlign.seniorMemberRules" />
         </el-form-item>
         <el-form-item label="代理规则">
-          <el-input v-model="formLabelAlign.delegateRules" maxlength="200" show-word-limit type="textarea" :rows="9" />
+          <Tinymce v-model="formLabelAlign.delegateRules" />
         </el-form-item>
         <el-form-item>
           <el-button @click="setSysConfig">设 置</el-button>
@@ -63,8 +57,12 @@
 
 <script>
 import { getSysConfig, setSysConfig } from '@/api/system'
+import Tinymce from '@/components/Tinymce'
 
 export default {
+  components: {
+    Tinymce
+  },
   data() {
     return {
       formLabelAlign: {
@@ -90,4 +88,10 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.w600{
+  width: 600px;
+}
+</style>
 

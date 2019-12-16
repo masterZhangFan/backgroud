@@ -17,22 +17,23 @@ export const constantRoutes = [{
   hidden: true
 },
 
-// {
-//   path: '/',
-//   component: Layout,
-//   redirect: '/dashboard',
-//   children: [{
-//     path: 'dashboard',
-//     name: 'Dashboard',
-//     component: () => import('@/views/dashboard/index'),
-//     meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
-//   }]
-// },
-
 {
   path: '/',
   component: Layout,
-  redirect: '/user-list',
+  redirect: '/login',
+  hidden: true,
+  children: [{
+    path: 'dashboard',
+    name: 'Dashboard',
+    component: () => import('@/views/dashboard/index'),
+    meta: { title: 'Dashboard', icon: 'dashboard', affix: true }
+  }]
+},
+
+{
+  path: '/user-list',
+  component: Layout,
+  // redirect: '/user-list',
   meta: {
     title: '用户管理',
     subtitle: '用户管理',
