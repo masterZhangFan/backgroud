@@ -60,14 +60,14 @@ const actions = {
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        commit('SET_TOKEN', '')
-        removeToken()
-        resetRouter()
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
+      // logout(state.token).then(() => {
+      commit('SET_TOKEN', '')
+      removeToken()
+      resetRouter()
+      resolve()
+      // }).catch(error => {
+      //   reject(error)
+      // })
     })
   },
 
